@@ -4,19 +4,25 @@
 		<meta charset="utf-8" />
 		<title>聊天室</title>
 		<script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-		<script src="script.js"></script>
+		<script charset="utf-8" src="script.js"></script>
 	</head>
 	<body>
-		<div id="dialog" style="border: 2px solid;">
-            <p>最难消解昨夜长风当时明月此事古难全</p>
-            <p>此处将显示您的对话消息</p>
+		<div id="dialog" style="border: 1px solid;">
+			<p>最难消解昨夜长风当时明月此事古难全</p>
+			<p>此处将显示您的对话消息</p>
+		</div>
+		<div style="border: 1px solid;">
+			<p id="status">此处显示您与服务器的连接质量</p>
 		</div>
 		<div id="control">
-			<p><a>房号</a><input id="room" type="text" />
-			<a>昵称</a><input id="nickname" type="text" /></p>
-            <p>
-			<a>消息</a><input id="message" type="text" />
-			<button id="submit">使用昵称并加入房间 / 发送消息</button></p>
+			<p>
+				<a>房号</a><input id="room" type="text" />
+				<a>昵称</a><input id="nickname" type="text" />
+			</p>
+			<p>
+				<a>消息</a><input id="message" type="text" />
+				<button id="submit" onclick="onClickSubmit()">使用昵称并加入房间 / 发送消息</button>
+			</p>
 		</div>
 	</body>
 </html>

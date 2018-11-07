@@ -2,7 +2,7 @@ const serverURL = 'backend.php';
 
 var room;       // 房号
 var nickname;   // 昵称
-var localMessageConnt;          // 本地接收的消息总数
+var localMessageCount;          // 本地接收的消息总数
 var remoteMessageCount;         // 服务器上消息的总数
 
 // 初始化页面
@@ -13,7 +13,7 @@ $(function() {
 	
 	room = params.get('room')
 	nickname = params.get('nickname');
-	localMessageConnt = 0;
+	localMessageCount = 0;
 	remoteMessageCount = 0;
 	
 	$('#room').val(room);
@@ -23,7 +23,7 @@ $(function() {
 });
 
 // 当Submit按钮被按下
-function onClickSubmit() {
+function onClickSubmitButton() {
 	room = $('#room').val();
 	nickname = $('#nickname').val();
 	
@@ -44,10 +44,10 @@ function sendMessage() {
 function updateRemoteMessageCount() {
     if (room != null && nickname != null) {
 		var data = {
-			room: room
+			room: room,
+			localMessageCount: localMessageCount
 		};
 		$.post(serverURL, data, function(response, status) {
-			console.log(status);
 			if (status == 'success') {
 				$('#status').html(String(response));
 				remoteMessageCount = Number(response);
@@ -61,13 +61,14 @@ function updateRemoteMessageCount() {
 
 // 从服务器上获取消息
 function getMessage() {
-	if (localMessageConnt < remoteMessageCount) {
+	if (localMessageCount < remoteMessageCount) {
 		var data = {
 			room: room,
-			count: localMessageConnt
+			index: localMessageCount+1
 		}
-		$.post(serverURL, data, function() {
-			$('#dialog').append('<p>' + String(data) + '</p>');
+		$.post(serverURL, data, function(response, status) {
+			$('#dialog').append('<p>' + String(response) + '</p>');
+			localMessageCount++;
 			getMessage()();
 		});
 	}

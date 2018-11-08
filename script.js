@@ -19,7 +19,6 @@ $(function() {
 	// 若用户在会话中改变了房间号则暂停从服务器获取数据，等待用户确认
 	$('#room').change(pause);
 	$('#nickname').change(pause);
-	setInterval(updateMessageFromServer, 1000);  // 定时从服务器端获取消息
 });
 
 // 将网页设置为“等待用户确认信息”状态
@@ -43,6 +42,7 @@ function start() {
 	$('#message').prop('disabled', false);
 	$('#submit').html('发送消息');
 	ready = true;
+	setTimeout(updateMessageFromServer, 1000);  // 定时从服务器端获取消息
 }
 
 // 当Submit按钮被按下
@@ -83,25 +83,32 @@ function updateMessageFromServer() {
 			} else {
 				$('#status').html('通信质量不佳');
 			}
-			getNextMessage();
+			getNextMessage();  // 尝试获取下一条没有同步到服务器端的消息
 		});
 	}
 }
 
-// 从服务器获取下一条尚未下载到本地的消息
+// 尝试从服务器获取下一条尚未下载到本地的消息
 function getNextMessage() {
-	if (ready && localMessageCount < serverMessageCount) {
-		var data = {
-			room: room,
-			nickname: nickname,
- 			index: localMessageCount + 1
-		}
-		$.post(serverURL, data, function(response, status) {
-			if (status == 'success') {
-				$('#dialog').append('<p>' + String(response) + '</p>');
-				localMessageCount++;
-				getNextMessage();
+	if (ready) {
+		if (localMessageCount < serverMessageCount) {  
+			// 若本地消息少于服务器上的消息，从服务器上获取新的消息
+			var data = {
+				room: room,
+				nickname: nickname,
+				index: localMessageCount + 1
 			}
-		});
+			$.post(serverURL, data, function(response, status) {
+				if (status == 'success') {
+					$('#dialog').append('<p>' + String(response) + '</p>');
+					localMessageCount++;
+					getNextMessage();
+				}
+			});
+		}
+		else {
+			// 若本地消息与服务器上消息数量相同，定时询问服务器是否有新的消息
+			setTimeout(updateMessageFromServer, 1000);
+		}
 	}
 }

@@ -76,7 +76,7 @@ function updateMessageFromServer() {
 			nickname: nickname,
 			localMessageCount: localMessageCount
 		};
-		$.post(serverURL, data, function(response, status) {
+		$.post(serverURL, data, function (response, status) {
 			if (status == 'success') {
 				$('#status').html('共计' + String(response) + '条消息');
 				serverMessageCount = Number(response);
@@ -98,7 +98,7 @@ function getNextMessage() {
 				nickname: nickname,
 				index: localMessageCount + 1
 			}
-			$.post(serverURL, data, function(response, status) {
+			$.post(serverURL, data, function (response, status) {
 				if (status == 'success') {
 					$('#dialog').append('<p>' + String(response) + '</p>');
 					localMessageCount++;
